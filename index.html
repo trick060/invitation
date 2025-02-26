@@ -113,6 +113,29 @@
             const button = document.getElementById('sorryButton');
             button.classList.add('hidden'); // Hide the sorry button
             document.getElementById('invitationTitle').classList.add('hidden'); // Hide title
+
+            // Send notification email via Formspree
+            const formData = new FormData();
+            formData.append('message', 'Someone declined your invitation.');
+
+            fetch('https://formspree.io/f/xgvojqkw', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Notification email sent successfully.');
+                } else {
+                    console.error('Failed to send notification email.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
             document.querySelectorAll('.container button').forEach(btn => btn.classList.add('hidden')); // Hide all buttons
             document.getElementById('sorryMessage').classList.remove('hidden'); // Show sorry message
         }
