@@ -46,9 +46,6 @@
             background-color: #c71585; /* Medium violet red */
             color: white;
         }
-        button.sorry.active {
-            background-color: #ff69b4; /* Pink */
-        }
         .hidden {
             display: none;
         }
@@ -111,10 +108,12 @@
 
         function handleSorry() {
             const button = document.getElementById('sorryButton');
-            button.classList.add('hidden'); // Hide the sorry button
-            document.getElementById('invitationTitle').classList.add('hidden'); // Hide title
+            button.innerText = "Kahit Saglit lang po 🙏 (Still No)?";
+            button.style.backgroundColor = "#ffa07a"; // Change background color
+            button.setAttribute("onclick", "sendDeclineEmail()"); // Change the click handler
+        }
 
-            // Send notification email via Formspree
+        function sendDeclineEmail() {
             const formData = new FormData();
             formData.append('message', 'Someone declined your invitation.');
 
@@ -128,6 +127,9 @@
             .then(response => {
                 if (response.ok) {
                     console.log('Notification email sent successfully.');
+                    document.getElementById('invitationTitle').classList.add('hidden'); // Hide title
+                    document.querySelectorAll('.container button').forEach(btn => btn.classList.add('hidden')); // Hide all buttons
+                    document.getElementById('sorryMessage').classList.remove('hidden'); // Show sorry message
                 } else {
                     console.error('Failed to send notification email.');
                 }
@@ -135,9 +137,6 @@
             .catch(error => {
                 console.error('Error:', error);
             });
-
-            document.querySelectorAll('.container button').forEach(btn => btn.classList.add('hidden')); // Hide all buttons
-            document.getElementById('sorryMessage').classList.remove('hidden'); // Show sorry message
         }
 
         function showChoices() {
