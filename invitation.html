@@ -1,0 +1,158 @@
+<!DOCTYPE html><html lang="en"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Invitation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000; /* Black background */
+            color: #fff; /* White text */
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: #ff69b4; /* Pink background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            text-align: center; /* Center text */
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button.yes {
+            background-color: #ff1493; /* Deep pink */
+            color: white;
+        }
+        button.sorry {
+            background-color: #c71585; /* Medium violet red */
+            color: white;
+        }
+        button.sorry.active {
+            background-color: #ff69b4; /* Pink */
+        }
+        .hidden {
+            display: none;
+        }
+        input[type="date"], select, textarea, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #222; /* Dark background for inputs */
+            color: #fff; /* White text for inputs */
+        }
+        input[type="date"]:focus, select:focus, textarea:focus, input[type="text"]:focus {
+            border-color: #ff69b4; /* Pink focus border */
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 id="invitationTitle">Can we grab some coffee or go outside?</h2>
+        <button class="yes" onclick="handleYes()">Yes</button>
+        <button class="sorry" id="sorryButton" onclick="handleSorry()">Sorry</button>
+
+        <div id="dateField" class="hidden">
+            <input type="date" id="dateInput" required="">
+            <button onclick="showChoices()">Next</button>
+        </div>
+
+        <div id="choices" class="hidden">
+            <h3>Where would you like to go?</h3>
+            <select id="locationSelect" onchange="toggleOtherField()">
+                <option value="Ronac Museum">Ronac Museum</option>
+                <option value="Rockwell">Rockwell</option>
+                <option value="San Juan Coffee Shop">San Juan Coffee Shop</option>
+                <option value="Other">Other</option>
+            </select>
+            <input type="text" id="otherLocation" class="hidden" placeholder="Please specify...">
+            <button onclick="showComments()">Next</button>
+        </div>
+
+        <div id="comments" class="hidden">
+            <textarea placeholder="Any comments?" rows="4"></textarea>
+            <button id="submitButton" onclick="submitForm()">Submit</button>
+        </div>
+
+        <h2 id="thankYouMessage" class="hidden">Thank you for allowing me to be with you, See You!</h2>
+        <h2 id="sorryMessage" class="hidden">Okay, Still Thank you. Maybe Next Time</h2>
+    </div>
+
+    <script>
+        function handleYes() {
+            document.querySelector('.yes').classList.add('hidden');
+            document.querySelector('.sorry').classList.add('hidden');
+            document.getElementById('dateField').classList.remove('hidden');
+        }
+
+        function handleSorry() {
+            const button = document.getElementById('sorryButton');
+            button.classList.add('hidden'); // Hide the sorry button
+            document.getElementById('invitationTitle').classList.add('hidden'); // Hide title
+            document.querySelectorAll('.container button').forEach(btn => btn.classList.add('hidden')); // Hide all buttons
+            document.getElementById('sorryMessage').classList.remove('hidden'); // Show sorry message
+        }
+
+        function showChoices() {
+            document.getElementById('choices').classList.remove('hidden');
+            document.getElementById('dateField').classList.add('hidden');
+        }
+
+        function toggleOtherField() {
+            const select = document.getElementById('locationSelect');
+            const otherField = document.getElementById('otherLocation');
+            otherField.classList.toggle('hidden', select.value !== 'Other');
+        }
+
+        function showComments() {
+            document.getElementById('comments').classList.remove('hidden');
+            document.getElementById('choices').classList.add('hidden');
+        }
+
+        function submitForm() {
+            const date = document.getElementById('dateInput').value;
+            const locationSelect = document.getElementById('locationSelect').value;
+            const otherLocation = document.getElementById('otherLocation').value;
+            const finalLocation = locationSelect === 'Other' ? otherLocation : locationSelect;
+            const comments = document.querySelector('textarea').value;
+
+            console.log({ date, location: finalLocation, comments });
+
+            // Hide title and form elements, show thank you message
+            document.getElementById('invitationTitle').classList.add('hidden');
+            document.getElementById('dateField').classList.add('hidden');
+            document.getElementById('choices').classList.add('hidden');
+            document.getElementById('comments').classList.add('hidden');
+            document.querySelectorAll('.container button').forEach(btn => btn.classList.add('hidden'));
+            
+            // Show thank you message
+            document.getElementById('thankYouMessage').classList.remove('hidden');
+        }
+
+        function sendEmail(message) {
+            console.log(message);
+        }
+    </script>
+
+
+</body></html>
